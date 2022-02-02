@@ -1,0 +1,58 @@
+plugins {
+  id 'java'
+  id 'groovy'
+  id 'org.sonarqube'
+  id 'maven-publish'
+  id 'com.jfrog.bintray'
+}
+
+ext.moduleName = 'lavaplayer-ext-youtube-rotator'
+version = '0.2.4'
+
+repositories {
+  maven {
+    // Only used for tests
+    url 'https://dl.bintray.com/sedmelluq/com.sedmelluq'
+  }
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+  compile group: 'com.github.davidffa', name: 'lavaplayer-fork', version: '0cb6a3a'
+}
+
+jar {
+  exclude("natives")
+}
+
+task updateVersion {
+  new File("$projectDir/src/main/resources/com/sedmelluq/discord/lavaplayer/tools/version.txt").with {
+    it.parentFile.mkdirs()
+    it.text = version
+  }
+}
+
+classes.finalizedBy(tasks['updateVersion'])
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      groupId rootProject.group
+      artifactId moduleName
+
+      from components.java
+
+      artifact sourceJar {
+        classifier 'sources'
+      }
+    }
+  }
+}
+
+apply from: "${rootDir}/gradle/bintray.gradle"
