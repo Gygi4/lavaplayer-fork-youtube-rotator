@@ -21,7 +21,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
   implementation 'org.slf4j:slf4j-api:1.7.33'
-  compile group: 'com.github.davidffa', name: 'lavaplayer-fork', version: '0cb6a3a'
+  compile group: 'com.github.davidffa', name: 'lavaplayer-fork', version: 'ec58668'
 }
 
 jar {
