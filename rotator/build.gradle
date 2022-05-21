@@ -7,7 +7,7 @@ plugins {
 }
 
 ext.moduleName = 'lavaplayer-ext-youtube-rotator'
-version = '1.4.3'
+version = '1.4.4'
 
 repositories {
   maven {
