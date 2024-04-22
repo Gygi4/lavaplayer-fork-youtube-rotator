@@ -7,7 +7,6 @@ plugins {
 allprojects {
     repositories {
         mavenCentral()
-        jcenter()
         mavenLocal()
         maven { url "https://jitpack.io" }
     }
@@ -15,10 +14,10 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 }
 
-ext.slf4jVersion = '1.7.25'
+ext.slf4jVersion = '2.0.13'
 
 group = 'com.sedmelluq'
