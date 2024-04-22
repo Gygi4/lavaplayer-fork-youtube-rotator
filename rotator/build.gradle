@@ -20,8 +20,8 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-  implementation 'org.slf4j:slf4j-api:2.0.7'
-  compile group: 'com.github.Gygi4', name: 'lavaplayer-fork', version: '174527a'
+  implementation 'org.slf4j:slf4j-api:2.0.13'
+  compile group: 'com.github.Gygi4', name: 'lavaplayer-fork', version: 'f9b021c'
 }
 
 jar {
