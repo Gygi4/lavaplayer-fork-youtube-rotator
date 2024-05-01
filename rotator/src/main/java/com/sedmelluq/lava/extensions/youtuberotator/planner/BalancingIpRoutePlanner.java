@@ -77,7 +77,7 @@ public class BalancingIpRoutePlanner extends AbstractRoutePlanner {
 
   private InetAddress getRandomAddress(final IpBlock ipBlock) {
     InetAddress localAddress;
-    BigInteger it = BigInteger.valueOf(0);
+      var it = BigInteger.valueOf(0);
     do {
       if (ipBlock.getSize().multiply(BigInteger.valueOf(2)).compareTo(it) < 0) {
         throw new RuntimeException("Can't find a free ip");

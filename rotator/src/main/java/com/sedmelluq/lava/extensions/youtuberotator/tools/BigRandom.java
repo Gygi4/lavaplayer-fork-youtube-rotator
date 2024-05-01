@@ -9,8 +9,8 @@ public final class BigRandom extends Random {
     if (bits < 32) {
       return BigInteger.valueOf(next(31));
     }
-    BigInteger value = BigInteger.ZERO;
-    int index = 0;
+      var value = BigInteger.ZERO;
+      var index = 0;
     while (bits >= 32) {
       bits -= 32;
       value = value.add(BigInteger.valueOf(next(32)).shiftLeft((index++) * 32));

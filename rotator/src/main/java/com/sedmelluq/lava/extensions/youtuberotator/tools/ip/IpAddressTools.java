@@ -25,7 +25,7 @@ public final class IpAddressTools {
     final List<Inet4Address> ip4 = new ArrayList<>();
 
     Collections.reverse(ipList);
-    for (final InetAddress ip : ipList) {
+    for (final var ip : ipList) {
       if (ip instanceof Inet6Address)
         ip6.add((Inet6Address) ip);
       else if (ip instanceof Inet4Address)

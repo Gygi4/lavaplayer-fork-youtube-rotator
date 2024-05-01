@@ -13,7 +13,7 @@ public class YoutubeIpRotatorRetryHandler implements HttpRequestRetryHandler {
     if (exception instanceof BindException) {
       return false;
     } else if (exception instanceof SocketException) {
-      String message = exception.getMessage();
+        var message = exception.getMessage();
 
       if (message != null && message.contains("Protocol family unavailable")) {
         return false;

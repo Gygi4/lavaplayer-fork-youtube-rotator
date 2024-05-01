@@ -3,16 +3,15 @@ plugins {
   id 'groovy'
   id 'org.sonarqube'
   id 'maven-publish'
-  id 'com.jfrog.bintray'
 }
 
 ext.moduleName = 'lavaplayer-ext-youtube-rotator'
-version = '2.1.2'
+version = '2.1.3'
 
 repositories {
   maven {
     // Only used for tests
-    url 'https://dl.bintray.com/sedmelluq/com.sedmelluq'
+    url 'https://jitpack.io'
   }
 }
 
@@ -50,10 +49,8 @@ publishing {
       from components.java
 
       artifact sourceJar {
-        classifier 'sources'
+        archiveClassifier = 'sources'
       }
     }
   }
 }
-
-apply from: "${rootDir}/gradle/bintray.gradle"

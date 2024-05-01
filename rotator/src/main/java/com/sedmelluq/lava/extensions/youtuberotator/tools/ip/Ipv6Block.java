@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -39,21 +38,21 @@ public class Ipv6Block extends IpBlock<Inet6Address> {
     if (!cidr.contains("/"))
       cidr += "/128";
     this.cidr = cidr.toLowerCase();
-    Matcher matcher = CIDR_REGEX.matcher(this.cidr);
+    var matcher = CIDR_REGEX.matcher(this.cidr);
     if (!matcher.find()) {
       throw new IllegalArgumentException(cidr + " does not appear to be a valid CIDR.");
     }
 
     BigInteger unboundedPrefix;
     try {
-      InetAddress address = InetAddress.getByName(matcher.group(1));
+      var address = InetAddress.getByName(matcher.group(1));
       unboundedPrefix = addressToLong((Inet6Address) address);
     } catch (UnknownHostException e) {
       throw new IllegalArgumentException("Invalid IPv6 address", e);
     }
     maskBits = Integer.parseInt(matcher.group(2));
 
-    BigInteger prefixMask = BITS1.shiftLeft(IPV6_BIT_SIZE - maskBits - 1);
+      var prefixMask = BITS1.shiftLeft(IPV6_BIT_SIZE - maskBits - 1);
     prefix = unboundedPrefix.and(prefixMask);
     log.info("Using Ipv6Block with {} addresses", getSize());
   }
@@ -65,8 +64,8 @@ public class Ipv6Block extends IpBlock<Inet6Address> {
   public Inet6Address getRandomAddress() {
     if (maskBits == IPV6_BIT_SIZE) return longToAddress(prefix);
 
-    final BigInteger randomAddressOffset = random.nextBigInt(IPV6_BIT_SIZE - (maskBits + 1)).abs();
-    Inet6Address inetAddress = longToAddress(prefix.add(randomAddressOffset));
+    final var randomAddressOffset = random.nextBigInt(IPV6_BIT_SIZE - (maskBits + 1)).abs();
+    var inetAddress = longToAddress(prefix.add(randomAddressOffset));
     log.info(inetAddress.toString());
     return inetAddress;
   }
@@ -103,10 +102,10 @@ public class Ipv6Block extends IpBlock<Inet6Address> {
   }
 
   private static Inet6Address longToAddress(final BigInteger l) {
-    final byte[] b = new byte[IPV6_BIT_SIZE / 8];
-    final int start = (b.length - 1) * 8;
-    for (int i = 0; i < b.length; i++) {
-      int shift = start - i * 8;
+    final var b = new byte[IPV6_BIT_SIZE / 8];
+    final var start = (b.length - 1) * 8;
+    for (var i = 0; i < b.length; i++) {
+        var shift = start - i * 8;
       if (shift > 0)
         b[i] = l.shiftRight(start - i * 8).byteValue();
       else
@@ -124,11 +123,11 @@ public class Ipv6Block extends IpBlock<Inet6Address> {
   }
 
   private static BigInteger bytesToLong(final byte[] b) {
-    BigInteger value = BigInteger.valueOf(0);
-    final int start = (b.length - 1) * 8;
+      var value = BigInteger.valueOf(0);
+    final var start = (b.length - 1) * 8;
     value = value.or(BigInteger.valueOf(b[0]).shiftLeft(start));
-    for (int i = 1; i < b.length; i++) {
-      final int shift = start - i * 8;
+    for (var i = 1; i < b.length; i++) {
+      final var shift = start - i * 8;
       if (shift > 0)
         value = value.or(BigInteger.valueOf(b[i] & 0xff).shiftLeft(shift));
       else

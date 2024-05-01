@@ -2,6 +2,7 @@ package com.sedmelluq.lava.extensions.youtuberotator.tools.ip;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.List;
@@ -19,7 +20,7 @@ public final class CombinedIpBlock extends IpBlock {
   private final ReentrantLock lock;
 
   public CombinedIpBlock(final List<IpBlock> ipBlocks) {
-    if (ipBlocks.size() == 0)
+    if (ipBlocks.isEmpty())
       throw new IllegalArgumentException("Ip Blocks list size must be greater than zero");
     this.type = ipBlocks.get(0).getType();
     if (ipBlocks.stream().anyMatch(block -> !block.getType().equals(type)))
@@ -28,8 +29,8 @@ public final class CombinedIpBlock extends IpBlock {
     this.hitProbability = new int[this.ipBlocks.size()];
 
     // Cache size of all blocks
-    BigInteger count = BigInteger.ZERO;
-    for (final IpBlock ipBlock : ipBlocks) {
+      var count = BigInteger.ZERO;
+    for (final var ipBlock : ipBlocks) {
       count = count.add(ipBlock.getSize());
     }
     this.size = count;
@@ -38,12 +39,12 @@ public final class CombinedIpBlock extends IpBlock {
   }
 
   private void calculateHitProbabilities() {
-    final BigDecimal size = new BigDecimal(this.size);
-    final BigInteger sizeMultiplicator = BigInteger.valueOf(Integer.MAX_VALUE); // 100% target = Integer.MAX_VALUE
-    for (int i = 0; i < ipBlocks.size(); i++) {
-      final IpBlock ipBlock = ipBlocks.get(i);
-      final BigInteger calcSize = ipBlock.getSize().multiply(sizeMultiplicator);
-      final BigDecimal probability = new BigDecimal(calcSize).divide(size, BigDecimal.ROUND_HALF_UP);
+    final var size = new BigDecimal(this.size);
+    final var sizeMultiplicator = BigInteger.valueOf(Integer.MAX_VALUE); // 100% target = Integer.MAX_VALUE
+    for (var i = 0; i < ipBlocks.size(); i++) {
+      final var ipBlock = ipBlocks.get(i);
+      final var calcSize = ipBlock.getSize().multiply(sizeMultiplicator);
+      final var probability = new BigDecimal(calcSize).divide(size, RoundingMode.HALF_UP);
       this.hitProbability[i] = probability.intValue();
     }
   }
@@ -52,10 +53,10 @@ public final class CombinedIpBlock extends IpBlock {
   public InetAddress getRandomAddress() {
     if (ipBlocks.size() == 1)
       return ipBlocks.get(0).getRandomAddress();
-    final int probability = random.nextInt(Integer.MAX_VALUE);
-    int probabilitySum = 0;
-    int matchIndex = 0;
-    for (int i = 0; i < hitProbability.length; i++) {
+    final var probability = random.nextInt(Integer.MAX_VALUE);
+      var probabilitySum = 0;
+      var matchIndex = 0;
+    for (var i = 0; i < hitProbability.length; i++) {
       if (hitProbability[i] > probability - probabilitySum) {
         matchIndex = i;
         break;
@@ -67,11 +68,11 @@ public final class CombinedIpBlock extends IpBlock {
 
   @Override
   public InetAddress getAddressAtIndex(BigInteger index) {
-    int blockIndex = 0;
+      var blockIndex = 0;
     while (index.compareTo(BigInteger.ZERO) > 0) {
       if (ipBlocks.size() <= blockIndex)
         break;
-      final IpBlock ipBlock = ipBlocks.get(blockIndex);
+      final var ipBlock = ipBlocks.get(blockIndex);
       if (ipBlock.getSize().compareTo(index) > 0)
         return ipBlock.getAddressAtIndex(index);
       index = index.subtract(ipBlock.getSize());
@@ -97,20 +98,20 @@ public final class CombinedIpBlock extends IpBlock {
    */
   @Override
   public int getMaskBits() {
-    int[] bits = new int[getType().equals(Inet6Address.class) ? 128 : 32];
-    int maskBits = bits.length;
+      var bits = new int[getType().equals(Inet6Address.class) ? 128 : 32];
+      var maskBits = bits.length;
     try {
       lock.lockInterruptibly();
-      for (final IpBlock ipBlock : ipBlocks) {
-        final int blockMaskBits = ipBlock.getMaskBits();
-        final int bitsAtIndex = bits[blockMaskBits - 1];
+      for (final var ipBlock : ipBlocks) {
+        final var blockMaskBits = ipBlock.getMaskBits();
+        final var bitsAtIndex = bits[blockMaskBits - 1];
         bits[blockMaskBits - 1] = bitsAtIndex + 1;
       }
       lock.unlock();
 
-      for (int i = bits.length - 1; i > 0; i--) {
-        final int bitsAtIndex = bits[i];
-        final int nextSize = bitsAtIndex / 2;
+      for (var i = bits.length - 1; i > 0; i--) {
+        final var bitsAtIndex = bits[i];
+        final var nextSize = bitsAtIndex / 2;
         bits[i] = bitsAtIndex - nextSize * 2;
         bits[i - 1] = bits[i - 1] + nextSize;
         if (bits[i - 1] > 0)

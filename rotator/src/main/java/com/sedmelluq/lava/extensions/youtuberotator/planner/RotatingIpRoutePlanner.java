@@ -117,7 +117,7 @@ public final class RotatingIpRoutePlanner extends AbstractRoutePlanner {
   @Override
   protected void onAddressFailure(final InetAddress address) {
     if (lastFailingAddress != null && lastFailingAddress.toString().equals(address.toString())) {
-      log.warn("Address {} was already failing, not triggering next()", address.toString());
+      log.warn("Address {} was already failing, not triggering next()", address);
       return;
     }
     lastFailingAddress = address;
@@ -127,7 +127,7 @@ public final class RotatingIpRoutePlanner extends AbstractRoutePlanner {
   private InetAddress extractLocalAddress() {
     InetAddress localAddress;
     long triesSinceBlockSkip = 0;
-    BigInteger it = BigInteger.valueOf(0);
+      var it = BigInteger.valueOf(0);
     do {
       if (ipBlock.getSize().multiply(BigInteger.valueOf(2)).compareTo(it) < 0) {
         throw new RuntimeException("Can't find a free ip");

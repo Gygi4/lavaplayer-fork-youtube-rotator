@@ -61,7 +61,7 @@ public class YoutubeIpRotatorFilter implements HttpContextFilter {
 
   @Override
   public boolean onRequestResponse(HttpClientContext context, HttpUriRequest request, HttpResponse response) {
-    int statusCode = response.getStatusLine().getStatusCode();
+      var statusCode = response.getStatusLine().getStatusCode();
 
     if (isSearch) {
       if (statusCode == 429) {
@@ -113,7 +113,7 @@ public class YoutubeIpRotatorFilter implements HttpContextFilter {
   }
 
   private void setRetryCount(HttpClientContext context, int value) {
-    RetryCount count = context.getAttribute(RETRY_COUNT_ATTRIBUTE, RetryCount.class);
+      var count = context.getAttribute(RETRY_COUNT_ATTRIBUTE, RetryCount.class);
 
     if (count == null) {
       count = new RetryCount();
@@ -124,7 +124,7 @@ public class YoutubeIpRotatorFilter implements HttpContextFilter {
   }
 
   private int getRetryCount(HttpClientContext context) {
-    RetryCount count = context.getAttribute(RETRY_COUNT_ATTRIBUTE, RetryCount.class);
+      var count = context.getAttribute(RETRY_COUNT_ATTRIBUTE, RetryCount.class);
     return count != null ? count.value : 0;
   }
 

@@ -90,7 +90,7 @@ public final class RotatingNanoIpRoutePlanner extends AbstractRoutePlanner {
   private InetAddress extractLocalAddress() {
     InetAddress localAddress;
     long triesSinceBlockSkip = 0;
-    BigInteger it = BigInteger.valueOf(0);
+      var it = BigInteger.valueOf(0);
     do {
       try {
         if (ipBlock.getSize().multiply(BigInteger.valueOf(2)).compareTo(it) < 0) {
@@ -101,9 +101,9 @@ public final class RotatingNanoIpRoutePlanner extends AbstractRoutePlanner {
         if (triesSinceBlockSkip > 128) {
           this.currentBlock.accumulateAndGet(BigInteger.ONE, BigInteger::add);
         }
-        final BigInteger nanoTime = BigInteger.valueOf(System.nanoTime());
-        final BigInteger timeOffset = nanoTime.subtract(blockNanoStart.get());
-        final BigInteger blockOffset = currentBlock.get().multiply(Ipv6Block.BLOCK64_IPS);
+        final var nanoTime = BigInteger.valueOf(System.nanoTime());
+        final var timeOffset = nanoTime.subtract(blockNanoStart.get());
+        final var blockOffset = currentBlock.get().multiply(Ipv6Block.BLOCK64_IPS);
         localAddress = ipBlock.getAddressAtIndex(blockOffset.add(timeOffset));
       } catch (final IllegalArgumentException ex) {
         this.currentBlock.set(BigInteger.ZERO);

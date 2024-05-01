@@ -8,7 +8,6 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.ProtocolException;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.conn.SchemePortResolver;
 import org.apache.http.conn.UnsupportedSchemeException;
@@ -64,7 +63,7 @@ public abstract class AbstractRoutePlanner implements HttpRoutePlanner {
   }
 
   public final void markAddressFailing(HttpClientContext context) {
-    final InetAddress address = getLastAddress(context);
+    final var address = getLastAddress(context);
     if (address == null) {
       log.warn("Call to markAddressFailing() without chosen IP set",
           new RuntimeException("Report this to the devs: address is null"));
@@ -83,7 +82,7 @@ public abstract class AbstractRoutePlanner implements HttpRoutePlanner {
   }
 
   protected final boolean isValidAddress(final InetAddress address) {
-    final Long failedTimestamp = failingAddresses.get(address.toString());
+    final var failedTimestamp = failingAddresses.get(address.toString());
     if (failedTimestamp == null) {
       log.debug("No failing entry for {}", address);
       return true;
@@ -103,8 +102,8 @@ public abstract class AbstractRoutePlanner implements HttpRoutePlanner {
     if (host == null) {
       throw new ProtocolException("Target host is not specified");
     }
-    final HttpClientContext clientContext = HttpClientContext.adapt(context);
-    final RequestConfig config = clientContext.getRequestConfig();
+    final var clientContext = HttpClientContext.adapt(context);
+    final var config = clientContext.getRequestConfig();
     int remotePort;
     if (host.getPort() <= 0) {
       try {
@@ -115,12 +114,12 @@ public abstract class AbstractRoutePlanner implements HttpRoutePlanner {
     } else
       remotePort = host.getPort();
 
-    final Tuple<Inet4Address, Inet6Address> remoteAddresses = IpAddressTools.getRandomAddressesFromHost(host);
-    final Tuple<InetAddress, InetAddress> addresses = determineAddressPair(remoteAddresses);
+    final var remoteAddresses = IpAddressTools.getRandomAddressesFromHost(host);
+    final var addresses = determineAddressPair(remoteAddresses);
 
-    final HttpHost target = new HttpHost(addresses.r, host.getHostName(), remotePort, host.getSchemeName());
-    final HttpHost proxy = config.getProxy();
-    final boolean secure = target.getSchemeName().equalsIgnoreCase("https");
+    final var target = new HttpHost(addresses.r, host.getHostName(), remotePort, host.getSchemeName());
+    final var proxy = config.getProxy();
+    final var secure = target.getSchemeName().equalsIgnoreCase("https");
     clientContext.setAttribute(CHOSEN_IP_ATTRIBUTE, addresses.l);
     log.debug("Setting route context attribute to {}", addresses.l);
     if (proxy == null) {

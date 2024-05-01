@@ -24,9 +24,9 @@ public final class Ipv4Block extends IpBlock<Inet4Address> {
   private static final Random random = new Random();
 
   private static int matchAddress(Matcher matcher) {
-    int addr = 0;
-    for (int i = 1; i <= 4; ++i) {
-      int n = (rangeCheck(Integer.parseInt(matcher.group(i)), 0, 255));
+      var addr = 0;
+    for (var i = 1; i <= 4; ++i) {
+        var n = (rangeCheck(Integer.parseInt(matcher.group(i)), 0, 255));
       addr |= ((n & 0xff) << 8 * (4 - i));
     }
     return addr;
@@ -45,7 +45,7 @@ public final class Ipv4Block extends IpBlock<Inet4Address> {
   public Ipv4Block(String cidr) {
     if (!cidr.contains("/"))
       cidr += "/32";
-    final Matcher matcher = CIDR_REGEX.matcher(cidr);
+    final var matcher = CIDR_REGEX.matcher(cidr);
     if (matcher.matches()) {
       this.address = matchAddress(matcher);
       this.maskBits = Integer.parseInt(matcher.group(5));
@@ -58,10 +58,10 @@ public final class Ipv4Block extends IpBlock<Inet4Address> {
   public Inet4Address getRandomAddress() {
     if (maskBits == NBITS) return intToAddress(address);
 
-    final int randMask = Integer.MAX_VALUE >> maskBits - 1;
-    final int maskedRandom = random.nextInt() & randMask;
+    final var randMask = Integer.MAX_VALUE >> maskBits - 1;
+    final var maskedRandom = random.nextInt() & randMask;
 
-    final Inet4Address inetAddress = intToAddress(address + maskedRandom);
+    final var inetAddress = intToAddress(address + maskedRandom);
     log.info(inetAddress.toString());
     return inetAddress;
   }
@@ -89,8 +89,8 @@ public final class Ipv4Block extends IpBlock<Inet4Address> {
   }
 
   private Inet4Address intToAddress(final int val) {
-    byte[] octets = new byte[4];
-    for (int j = 3; j >= 0; --j) {
+      var octets = new byte[4];
+    for (var j = 3; j >= 0; --j) {
       octets[j] |= ((val >>> 8 * (3 - j)) & (0xff));
     }
     try {

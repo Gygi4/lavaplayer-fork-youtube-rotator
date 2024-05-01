@@ -68,12 +68,12 @@ public final class NanoIpRoutePlanner extends AbstractRoutePlanner {
   }
 
   private InetAddress getAddress() {
-    final BigInteger now = BigInteger.valueOf(System.nanoTime());
-    final BigInteger nanoOffset = now.subtract(startTime); // least 64 bit
+    final var now = BigInteger.valueOf(System.nanoTime());
+    final var nanoOffset = now.subtract(startTime); // least 64 bit
     if(maskBits == 64) {
       return ipBlock.getAddressAtIndex(nanoOffset);
     }
-    final BigInteger randomOffset = random.nextBigInt(Ipv6Block.IPV6_BIT_SIZE - maskBits).shiftLeft(Ipv6Block.IPV6_BIT_SIZE - maskBits); // most {{maskBits}}-64 bit
+    final var randomOffset = random.nextBigInt(Ipv6Block.IPV6_BIT_SIZE - maskBits).shiftLeft(Ipv6Block.IPV6_BIT_SIZE - maskBits); // most {{maskBits}}-64 bit
     return ipBlock.getAddressAtIndex(randomOffset.add(nanoOffset));
   }
 
